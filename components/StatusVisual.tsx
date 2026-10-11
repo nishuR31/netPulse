@@ -1,4 +1,3 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Image, StyleSheet, View } from 'react-native';
 import { layout, type Status } from '../constants/theme';
@@ -21,7 +20,7 @@ type Props = {
   isDark?: boolean;
 };
 
-export function StatusVisual({ status, colors, glowColor, coreColor, isDark = true }: Props) {
+export function StatusVisual({ status, colors, glowColor, isDark = true }: Props) {
   const spin = useRef(new Animated.Value(0)).current;
   const breathe = useRef(new Animated.Value(1)).current;
   const ripple = useRef(new Animated.Value(0)).current;
@@ -87,7 +86,6 @@ export function StatusVisual({ status, colors, glowColor, coreColor, isDark = tr
   const rippleScale = ripple.interpolate({ inputRange: [0, 1], outputRange: [1, 1.45] });
   const rippleOpacity = ripple.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.5, 0.2, 0] });
 
-  // Select appropriate theme asset
   const assetSource =
     status === 'checking'
       ? statusAssets.loading
@@ -102,7 +100,14 @@ export function StatusVisual({ status, colors, glowColor, coreColor, isDark = tr
   return (
     <View style={styles.frame}>
       {/* Dynamic Ambient Pulsing Halo */}
-      <View style={[styles.glow, { backgroundColor: glowColor }]} />
+      <View
+        style={[
+          styles.glow,
+          {
+            backgroundColor: glowColor,
+          },
+        ]}
+      />
 
       {/* Ripple ring for online state */}
       {status === 'online' && (
@@ -118,39 +123,36 @@ export function StatusVisual({ status, colors, glowColor, coreColor, isDark = tr
         />
       )}
 
-      {/* Liquid Glass Orb Container */}
+      {/* Breathing Liquid Glass Orb Container */}
       <Animated.View
         style={[
-          styles.orb,
+          styles.orbWrapper,
           {
-            transform: [
-              { scale: breathe },
-              ...(status === 'checking' ? [{ rotate }] : []),
-            ],
+            transform: [{ scale: breathe }],
           },
         ]}
       >
-        {/* Soft Background Gradient Fill */}
-        <LinearGradient
-          colors={colors}
-          start={{ x: 0.1, y: 0.05 }}
-          end={{ x: 0.9, y: 0.95 }}
-          style={StyleSheet.absoluteFill}
-        />
+        <View style={styles.orbInner}>
+          {/* Animated Graphic Core - only rotates when checking */}
+          {status === 'checking' ? (
+            <Animated.View style={{ transform: [{ rotate }] }}>
+              <Image
+                source={assetSource}
+                style={styles.assetImage}
+                resizeMode="contain"
+              />
+            </Animated.View>
+          ) : (
+            <Image
+              source={assetSource}
+              style={styles.assetImage}
+              resizeMode="contain"
+            />
+          )}
 
-        {/* High Resolution Themed Status Graphic Asset */}
-        <Image
-          source={assetSource}
-          style={styles.assetImage}
-          resizeMode="contain"
-        />
-
-        {/* Liquid Glass Highlight Curve (Specular reflection) */}
-        <View style={styles.highlight} pointerEvents="none" />
-        <View style={styles.highlightSubtle} pointerEvents="none" />
-
-        {/* Glass Edge Rim */}
-        <View style={styles.glassRim} pointerEvents="none" />
+          {/* Liquid Glass Perimeter Bezel */}
+          <View style={styles.glassRim} pointerEvents="none" />
+        </View>
       </Animated.View>
     </View>
   );
@@ -158,67 +160,55 @@ export function StatusVisual({ status, colors, glowColor, coreColor, isDark = tr
 
 const styles = StyleSheet.create({
   frame: {
-    width: SIZE + 30,
-    height: SIZE + 30,
+    width: SIZE + 36,
+    height: SIZE + 36,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   glow: {
     position: 'absolute',
-    width: SIZE + 48,
-    height: SIZE + 48,
-    borderRadius: (SIZE + 48) / 2,
-    opacity: 0.28,
+    width: SIZE + 54,
+    height: SIZE + 54,
+    borderRadius: (SIZE + 54) / 2,
+    opacity: 0.25,
   },
   rippleRing: {
     position: 'absolute',
-    width: SIZE + 10,
-    height: SIZE + 10,
-    borderRadius: (SIZE + 10) / 2,
-    borderWidth: 2,
+    width: SIZE + 16,
+    height: SIZE + 16,
+    borderRadius: (SIZE + 16) / 2,
+    borderWidth: 1.5,
   },
-  orb: {
+  orbWrapper: {
     width: SIZE,
     height: SIZE,
     borderRadius: SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
     shadowColor: '#000',
-    shadowOpacity: 0.35,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 12,
+    shadowOpacity: 0.28,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 8,
+  },
+  orbInner: {
+    width: SIZE,
+    height: SIZE,
+    borderRadius: SIZE / 2,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
     position: 'relative',
   },
   assetImage: {
-    width: SIZE * 0.88,
-    height: SIZE * 0.88,
-  },
-  highlight: {
-    position: 'absolute',
-    top: 8,
-    left: SIZE * 0.18,
-    width: SIZE * 0.52,
-    height: SIZE * 0.24,
-    borderRadius: SIZE * 0.24,
-    backgroundColor: 'rgba(255, 255, 255, 0.40)',
-    transform: [{ rotate: '-18deg' }],
-  },
-  highlightSubtle: {
-    position: 'absolute',
-    bottom: 12,
-    right: SIZE * 0.2,
-    width: SIZE * 0.3,
-    height: SIZE * 0.12,
-    borderRadius: SIZE * 0.12,
-    backgroundColor: 'rgba(255, 255, 255, 0.14)',
+    width: SIZE,
+    height: SIZE,
   },
   glassRim: {
     ...StyleSheet.absoluteFill,
     borderRadius: SIZE / 2,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
+    borderColor: 'rgba(255, 255, 255, 0.28)',
   },
 });

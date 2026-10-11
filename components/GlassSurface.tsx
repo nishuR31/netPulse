@@ -17,11 +17,11 @@ type Props = PropsWithChildren<{
 }>;
 
 /**
- * Premium Liquid Glass Surface:
- * - Silky continuous organic curved corners (no sharp angles)
- * - Translucent backdrop blur with high-performance fallbacks
- * - Specular liquid glass rim reflection along top curvature
- * - Native shadow and elevation
+ * Premium Continuous Liquid Glass Surface:
+ * - Dual-layer architecture: Outer shadow wrapper + inner anti-aliased clipped glass container
+ * - Prevents Android square corner clipping bugs and elevation bleeding
+ * - BlurView and tint layers strictly bounded with matching continuous corner radii
+ * - Seamless diagonal specular reflection across full surface (no hard horizontal cutoff seams)
  */
 export function GlassSurface({
   children,
@@ -31,68 +31,135 @@ export function GlassSurface({
   specularColor = 'rgba(255, 255, 255, 0.16)',
   intensity = 30,
   radius = curves.card,
-  borderWidth = 1,
+  borderWidth = 1.2,
   style,
 }: Props) {
+  // Separate layout/margin/dimension styles for outer wrapper vs internal padding
+  const flatStyle = StyleSheet.flatten(style) || {};
+  const {
+    margin,
+    marginHorizontal,
+    marginVertical,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    flex,
+    width,
+    height,
+    alignSelf,
+    position,
+    top,
+    bottom,
+    left,
+    right,
+    zIndex,
+    ...innerStyles
+  } = flatStyle;
+
+  const outerLayoutStyles: ViewStyle = {
+    margin,
+    marginHorizontal,
+    marginVertical,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    flex,
+    width,
+    height,
+    alignSelf,
+    position,
+    top,
+    bottom,
+    left,
+    right,
+    zIndex,
+  };
+
   return (
     <View
       style={[
-        styles.wrapper,
+        styles.outerShadowWrapper,
         {
           borderRadius: radius,
-          borderWidth,
-          borderColor,
-          borderCurve: 'continuous',
         },
-        style,
+        outerLayoutStyles,
       ]}
     >
-      {/* Frosted Blur Layer */}
-      <BlurView
-        intensity={Platform.OS === 'android' ? Math.min(intensity, 30) : intensity}
-        tint={tint}
-        style={StyleSheet.absoluteFill}
-      />
-
-      {/* Fluid Glass Color Tint */}
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: tintColor }]} />
-
-      {/* Liquid Specular Rim Highlight */}
-      <LinearGradient
-        colors={[specularColor, 'rgba(255, 255, 255, 0.03)', 'transparent']}
-        start={{ x: 0.1, y: 0 }}
-        end={{ x: 0.9, y: 0.65 }}
+      {/* Inner Clipped Glass Container */}
+      <View
         style={[
-          styles.specularSheen,
+          styles.innerClippedGlass,
           {
-            borderTopLeftRadius: radius,
-            borderTopRightRadius: radius,
+            borderRadius: radius,
+            borderWidth,
+            borderColor,
+            borderCurve: 'continuous',
           },
+          innerStyles,
         ]}
-        pointerEvents="none"
-      />
+      >
+        {/* Anti-aliased Frosted Blur Layer */}
+        <BlurView
+          intensity={Platform.OS === 'android' ? Math.min(intensity, 28) : intensity}
+          tint={tint}
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              borderRadius: radius,
+              overflow: 'hidden',
+            },
+          ]}
+        />
 
-      {children}
+        {/* Translucent Fluid Glass Tint */}
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              backgroundColor: tintColor,
+              borderRadius: radius,
+            },
+          ]}
+        />
+
+        {/* Seamless Liquid Specular Bezel Sheen - Full diagonal gradient, zero hard cutoffs */}
+        <LinearGradient
+          colors={[
+            specularColor,
+            'rgba(255, 255, 255, 0.04)',
+            'transparent',
+            'rgba(255, 255, 255, 0.015)',
+          ]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0.7, y: 0.85 }}
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              borderRadius: radius,
+            },
+          ]}
+          pointerEvents="none"
+        />
+
+        {children}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
+  outerShadowWrapper: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.16,
+    shadowRadius: 16,
+    elevation: 3,
+  },
+  innerClippedGlass: {
     overflow: 'hidden',
     position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.14,
-    shadowRadius: 18,
-    elevation: 4,
-  },
-  specularSheen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 42,
-    opacity: 0.85,
+    borderCurve: 'continuous',
   },
 });

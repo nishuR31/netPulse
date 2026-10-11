@@ -1,40 +1,69 @@
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs } from 'expo-router';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { ChartIcon, ChipIcon, PulseIcon, ShieldIcon } from '../../components/icons';
 import { useTheme } from '../../lib/theme-context';
 
 export default function TabsLayout() {
   const { palette } = useTheme();
+  const isDark = palette.mode === 'dark';
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: palette.mode === 'dark' ? palette.accent : palette.foreground,
+        tabBarActiveTintColor: isDark ? palette.accent : palette.foreground,
         tabBarInactiveTintColor: palette.secondary,
         tabBarShowLabel: true,
         tabBarStyle: {
           position: 'absolute',
-          borderTopWidth: StyleSheet.hairlineWidth,
-          borderTopColor: palette.borderHighlight,
-          elevation: 8,
-          height: Platform.OS === 'ios' ? 88 : 72,
-          paddingTop: 8,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 10,
+          bottom: Platform.OS === 'ios' ? 24 : 14,
+          left: 20,
+          right: 20,
+          height: 64,
+          borderRadius: 32,
+          borderWidth: 1.2,
+          borderColor: isDark ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.70)',
           backgroundColor: 'transparent',
+          elevation: 6,
           shadowColor: palette.shadow,
-          shadowOffset: { width: 0, height: -6 },
-          shadowOpacity: 0.18,
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: isDark ? 0.35 : 0.12,
           shadowRadius: 16,
+          paddingTop: 8,
+          paddingBottom: Platform.OS === 'ios' ? 8 : 6,
+          overflow: 'hidden',
         },
         tabBarBackground: () => (
-          <BlurView
-            intensity={Platform.OS === 'android' ? 35 : 60}
-            tint={palette.blurTint}
-            style={[StyleSheet.absoluteFill, { backgroundColor: palette.surfaceStrong }]}
-          />
+          <View style={[StyleSheet.absoluteFill, { borderRadius: 32, overflow: 'hidden' }]}>
+            <BlurView
+              intensity={Platform.OS === 'android' ? 28 : 50}
+              tint={palette.blurTint}
+              style={[StyleSheet.absoluteFill, { borderRadius: 32 }]}
+            />
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                {
+                  backgroundColor: isDark
+                    ? 'rgba(255, 255, 255, 0.06)'
+                    : 'rgba(255, 255, 255, 0.65)',
+                  borderRadius: 32,
+                },
+              ]}
+            />
+            <LinearGradient
+              colors={[
+                isDark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(255, 255, 255, 0.85)',
+                'transparent',
+              ]}
+              start={{ x: 0.1, y: 0 }}
+              end={{ x: 0.7, y: 0.8 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: 32 }]}
+            />
+          </View>
         ),
         tabBarLabelStyle: {
           fontSize: 11,

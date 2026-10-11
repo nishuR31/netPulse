@@ -47,9 +47,9 @@ const dark: Palette = {
   blobSecondary: '#F43F5E',
   blobTertiary: '#06B6D4',
   surface: 'rgba(255, 255, 255, 0.05)',
-  surfaceStrong: 'rgba(255, 255, 255, 0.09)',
+  surfaceStrong: 'rgba(255, 255, 255, 0.08)',
   surfaceSubtle: 'rgba(255, 255, 255, 0.03)',
-  border: 'rgba(255, 255, 255, 0.10)',
+  border: 'rgba(255, 255, 255, 0.12)',
   borderHighlight: 'rgba(255, 255, 255, 0.22)',
   foreground: '#F8FAFC',
   secondary: '#94A3B8',
@@ -60,7 +60,7 @@ const dark: Palette = {
   offline: ['#FB7185', '#E11D48'],
   checking: ['#818CF8', '#3B82F6'],
   shadow: 'rgba(0, 0, 0, 0.45)',
-  glassSpecular: 'rgba(255, 255, 255, 0.12)',
+  glassSpecular: 'rgba(255, 255, 255, 0.18)',
 };
 
 const light: Palette = {
@@ -69,11 +69,11 @@ const light: Palette = {
   blobPrimary: '#34D399',
   blobSecondary: '#FDA4AF',
   blobTertiary: '#7DD3FC',
-  surface: 'rgba(255, 255, 255, 0.65)',
-  surfaceStrong: 'rgba(255, 255, 255, 0.85)',
-  surfaceSubtle: 'rgba(255, 255, 255, 0.45)',
-  border: 'rgba(255, 255, 255, 0.90)',
-  borderHighlight: 'rgba(255, 255, 255, 0.98)',
+  surface: 'rgba(255, 255, 255, 0.58)',
+  surfaceStrong: 'rgba(255, 255, 255, 0.72)',
+  surfaceSubtle: 'rgba(255, 255, 255, 0.38)',
+  border: 'rgba(255, 255, 255, 0.65)',
+  borderHighlight: 'rgba(255, 255, 255, 0.90)',
   foreground: '#0F172A',
   secondary: '#475569',
   muted: '#94A3B8',
@@ -83,7 +83,7 @@ const light: Palette = {
   offline: ['#F43F5E', '#BE123C'],
   checking: ['#6366F1', '#2563EB'],
   shadow: 'rgba(15, 23, 42, 0.12)',
-  glassSpecular: 'rgba(255, 255, 255, 0.65)',
+  glassSpecular: 'rgba(255, 255, 255, 0.55)',
 };
 
 export function getPalette(scheme: ColorSchemeName): Palette {

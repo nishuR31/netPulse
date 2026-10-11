@@ -1,4 +1,4 @@
-import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
+import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import { StyleSheet, View } from 'react-native';
 
 export function GlowBlob({
@@ -13,7 +13,7 @@ export function GlowBlob({
   size: number;
   color: string;
   opacity?: number;
-  tint?: 'light' | 'dark'; // kept for backward-compatibility
+  tint?: 'light' | 'dark';
   top?: number;
   left?: number;
   right?: number;
@@ -46,7 +46,7 @@ export function GlowBlob({
             <Stop offset="100%" stopColor={color} stopOpacity={0} />
           </RadialGradient>
         </Defs>
-        <Rect width={size} height={size} fill={`url(#${gradientId})`} />
+        <Circle cx={half} cy={half} r={half} fill={`url(#${gradientId})`} />
       </Svg>
     </View>
   );
