@@ -1,0 +1,15 @@
+{
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "image": "sdk-57"
+    },
+    "production": {
+      "autoIncrement": true,
+      "image": "sdk-57"
+    }
+  }
+}

@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Expo
+.expo/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Native generated folders (Expo Prebuild / CNG)
+# Generated deterministically by `npx expo prebuild` from app.json & package.json
+/android
+/ios
+
+# Android build outputs & local environment (if android/ is ever un-ignored)
+.gradle/
+build/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/*.iml
+android/app/*.iml
+android/.cxx/
+android/.idea/
+android/captures/
+android/.externalNativeBuild/
+android/app/debug.keystore
+
+# Logs & Bundler
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Environment & Secrets
+.env
+.env*.local
+
+# System & Editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
